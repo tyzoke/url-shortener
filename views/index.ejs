@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com"> 
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="/style.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <script src="/script.js"></script>
+
+    
+
+   
+</head>
+<body>
+  <div class="header">
+    <h1 class="header_logo">URL SHORTENER</h1>
+  </div>
+  
+  <div>
+
+
+    
+  </div>
+
+  <div  class="login-box">
+    <h2>Enter URL</h2>
+    <form  class="form" action="/shortUrls" method="POST">
+      <div class="user-box">
+        <input  name="urlInput" class="input" type="url" id="urlInput"  required>
+        <label>URL</label>
+      </div>
+      <div class="user-box">
+        <input name="noteInput" class="input" type="text" id="noteInput"  required>
+        <label>Name</label>
+      </div>
+      <button  class="btn" type="submit">Shorten URL</button>
+     
+    </form>
+    <div>
+      <% if (typeof shortenedUrl !== 'undefined' && shortenedUrl) { %>
+        <p>Shortened URL: <a href="<%= shortenedUrl %>"><%= shortenedUrl %></a></p>
+      <% } %>
+    </div>
+  </div>
+
+
+<!--
+  <div class="container mt-5 " style="max-height: 500px; overflow-y: scroll;">
+    <table class="table table-striped table-responsive">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Full Url</th>
+          <th scope="col">Short Url</th>
+          <th scope="col">Name</th>
+          <th scope="col">Clicks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% shorturls.forEach(element => {%>
+          <tr>
+            <td><a href="<%=element.full %>"><%=element.full %></a></td>
+            <td><a href="<%=element.short %>"><%=element.short %></a></td>
+            <td><%=element.note %></td>
+            <td><%=element.clicks %></td>
+          </tr>
+        <% }) %>
+        
+        
+        
+      </tbody>
+    </table>
+  </div>
+
+-->
+
+<div class="searchBox">
+  <div class="search-container">
+    <input id="searchInput" type="text" name="search" placeholder="Search..." class="search-input">
+    <a href="#" class="search-btn">
+            <i class="fas fa-search"></i>      
+    </a>
+  </div>
+</div>
+
+
+
+    
+    <div class="container mt-5">
+      <!-- <h1>URL Search</h1> -->
+      <!-- <input  id="searchInput" type="text" placeholder="Search..." /> -->
+      <table id="searchResults" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name of URL</th>
+            <th>Full URL</th>
+            <th>Shorten URL</th>
+            <th>Number of Clicks</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      const searchInput = document.getElementById("searchInput");
+      const searchResults = document.getElementById("searchResults").getElementsByTagName("tbody")[0];
+    
+      searchInput.addEventListener("input", () => {
+        const term = searchInput.value;
+    
+        if (term.length > 0) {
+          axios
+            .get(`/search?term=${encodeURIComponent(term)}`)
+            .then(response => {
+              const results = response.data;
+    
+              // Clear previous search results
+              searchResults.innerHTML = "";
+    
+              // Populate the search results table
+              results.forEach(result => {
+                const row = document.createElement("tr");
+    
+                const nameCell = document.createElement("td");
+                nameCell.textContent = result.note;
+                row.appendChild(nameCell);
+    
+                const fullUrlCell = document.createElement("td");
+                fullUrlCell.textContent = result.full;
+                row.appendChild(fullUrlCell);
+    
+                const shortenUrlCell = document.createElement("td");
+                const shortenUrlLink = document.createElement("a");
+                shortenUrlLink.textContent = result.short;
+                shortenUrlLink.href = result.short; // Set the href attribute to the shortened URL
+                shortenUrlCell.appendChild(shortenUrlLink);
+                row.appendChild(shortenUrlCell);
+    
+                const clicksCell = document.createElement("td");
+                clicksCell.textContent = result.clicks;
+                row.appendChild(clicksCell);
+    
+                searchResults.appendChild(row);
+              });
+            })
+            .catch(error => {
+              console.error("Error:", error);
+            });
+        } else {
+          // Clear search results when the input is empty
+          searchResults.innerHTML = "";
+        }
+      });
+
+      
+
+
+
+      
+    </script>
+    
+</body>
+</html>
